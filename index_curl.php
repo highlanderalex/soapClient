@@ -1,25 +1,21 @@
 <?php
+	require_once 'config.php';
 	require_once 'libs/func.php';
 
-    $ch = curl_init('http://footballpool.dataaccess.eu/data/info.wso/Teams/');
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    $str = simplexml_load_string(curl_exec($ch));
-    curl_close($ch);
-    $data = '';
-    foreach($str->tTeamInfo as $item)
-    {
-        $data .= '<tr><td>' . $item->sName . '</td>';
-        $data .= '<td><a href="' . $item->sWikipediaURL . '">InfoWikipedia</a></td>';
-        $data .= '<td><img src="' . $item->sCountryFlagLarge . '"></td></tr>';
-    }    
+    $meth = '/Teams/';
+	$http = CURL_FOOTBALL . $meth;
+	
+	$game = new SimpleCurl($http);
+    $game->teams();
+    $data = $game->getData();
     
     if (isset($_POST['send']))
 	{
-        $curr = curl_init('http://www.webservicex.net/CurrencyConvertor.asmx/ConversionRate?FromCurrency=' .
-            $_POST['from'] . '&ToCurrency=' . $_POST['to']);
-         curl_setopt($curr, CURLOPT_RETURNTRANSFER, true);
-        $rez = curl_exec($curr);
- 		$val = $_POST['from'] . '/' . $_POST['to'] . ' = ' . $rez;
+        $param = '/ConversionRate?FromCurrency=' . $_POST['from'] . '&ToCurrency=' . $_POST['to'];
+		$http = CURL_CURRENCY . $param;
+		$curr = new SimpleCurl($http);
+		$curr->currency();
+ 		$val = $_POST['from'] . '/' . $_POST['to'] . ' = ' . $curr->getData();
 	}
 	
 	require_once 'templates/index_curl.php';

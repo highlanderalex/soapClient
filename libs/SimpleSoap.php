@@ -17,6 +17,13 @@
 			
 		}
 		
+		public function convertCurr($arr)
+		{
+			$this->result = $this->obj->ConversionRate($arr);
+			$this->str = $this->result->ConversionRateResult;
+			
+		}
+		
 		private function parseResult()
 		{
 			foreach($this->result->AllGamesResult->tGameInfo as $item)
